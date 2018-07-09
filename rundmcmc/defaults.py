@@ -20,8 +20,7 @@ from rundmcmc.validity import (L1_reciprocal_polsby_popper, UpperBound,
                                refuse_new_splits, single_flip_contiguous,
                                within_percent_of_ideal_population)
 
-default_constraints = [single_flip_contiguous,
-                       no_vanishing_districts,
+default_constraints = [no_vanishing_districts,
                        refuse_new_splits]
 
 
@@ -95,12 +94,9 @@ class BasicChain(MarkovChain):
         if not initial_state['population']:
             raise ValueError('BasicChain needs the Partition to have a population updater.')
 
-        population_constraint = within_percent_of_ideal_population(initial_state, 0.01)
+        population_constraint = within_percent_of_ideal_population(initial_state, 1)
 
-        compactness_limit = L1_reciprocal_polsby_popper(initial_state)
-        compactness_constraint = UpperBound(L1_reciprocal_polsby_popper, compactness_limit)
-
-        validator = Validator(default_constraints + [population_constraint, compactness_constraint])
+        validator = Validator(default_constraints + [population_constraint])
 
         super().__init__(propose_random_flip, validator, always_accept, initial_state,
                          total_steps=total_steps)
