@@ -42,7 +42,7 @@ def normalized_efficiency_gap(partition, proportion_column_name):
     return 2 * total_vote_share - seats_share
 
 
-def efficiency_gap(partition, col1='PR_DV08', col2='PR_RV08'):
+def efficiency_gap(partition, col1='join_Dem', col2='join_Rep'):
     party1 = partition[col1]
     party2 = partition[col2]
     wasted_votes_by_part = {part: wasted_votes(party1[part], party2[part])
@@ -123,9 +123,10 @@ def get_dict_of_flips(chain):
 def p_value(chain, initial_partition):
     better = 0
     worse = 0
-    initial_value = mean_median(initial_partition, 'PR_DV08%')
+    testD= int()
+    initial_value = mean_median(initial_partition, 'join_Dem')
     for partition in chain:
-        partition_value = mean_median(partition, 'PR_DV08%')
+        partition_value = mean_median(partition, 'join_Dem')
         if partition_value > initial_value:
             worse += 1
         else:

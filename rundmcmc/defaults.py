@@ -94,12 +94,19 @@ class BasicChain(MarkovChain):
         if not initial_state['population']:
             raise ValueError('BasicChain needs the Partition to have a population updater.')
 
-        population_constraint = within_percent_of_ideal_population(initial_state, 1)
 
-        validator = Validator(default_constraints + [population_constraint])
+        population_constraint = within_percent_of_ideal_population(initial_state, 1) #within 100 percent population deviation
+
+        compactness_limit = L1_reciprocal_polsby_popper(initial_state)
+        compactness_constraint = UpperBound(L1_reciprocal_polsby_popper, compactness_limit)
+
+        validator = Validator(default_constraints + [population_constraint, compactness_constraint])
 
         super().__init__(propose_random_flip, validator, always_accept, initial_state,
                          total_steps=total_steps)
+
+
+
 
 
 grid_validator = Validator([single_flip_contiguous, no_vanishing_districts])
